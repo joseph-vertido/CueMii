@@ -1,6 +1,6 @@
 # BADDIXX CueMii App
 
-**Version 4.0.20**
+**Version 4.0.21**
 
 A comprehensive badminton queuing and court management system built with React and Tailwind CSS.
 
@@ -159,6 +159,10 @@ All application data is automatically saved to your browser's localStorage:
 Data persists across browser refreshes and sessions. Use the **Reset** button in the header to clear all saved data and restore defaults.
 
 ## Version History
+
+- **v4.0.21** - Simplified Update Instructions
+  - Simplified update message to just show instructions
+  - Removed folder path configuration and open folder button
 
 - **v4.0.20** - Auto-Scroll to Court
   - Added: Courts panel auto-scrolls to the court when a match is assigned

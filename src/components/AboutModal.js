@@ -11,11 +11,7 @@ import {
 // GitHub repo for updates
 const GITHUB_REPO = 'joseph-vertido/CueMii';
 const GITHUB_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/package.json`;
-const GITHUB_RELEASES_URL = `https://github.com/${GITHUB_REPO}/releases`;
 const GITHUB_DOWNLOAD_URL = `https://github.com/${GITHUB_REPO}/archive/refs/heads/main.zip`;
-
-// Default CueMii folder path
-const DEFAULT_CUEMII_PATH = 'C:\\CueMii';
 
 // Compare version strings (e.g., "4.0.8" vs "4.1.0")
 const compareVersions = (current, latest) => {
@@ -50,33 +46,6 @@ const AboutModal = ({
   const [updateStatus, setUpdateStatus] = useState('idle'); // idle, checking, available, upToDate, error
   const [latestVersion, setLatestVersion] = useState(null);
   const [updateError, setUpdateError] = useState('');
-  
-  // CueMii folder path (stored in localStorage)
-  const [cuemiiPath, setCuemiiPath] = useState(() => {
-    return localStorage.getItem('baddixx_cuemiiPath') || DEFAULT_CUEMII_PATH;
-  });
-  const [isEditingPath, setIsEditingPath] = useState(false);
-  const [editPathValue, setEditPathValue] = useState('');
-
-  // Save path to localStorage when changed
-  const saveCuemiiPath = (newPath) => {
-    const path = newPath.trim() || DEFAULT_CUEMII_PATH;
-    setCuemiiPath(path);
-    localStorage.setItem('baddixx_cuemiiPath', path);
-    setIsEditingPath(false);
-  };
-
-  // Open folder in Windows Explorer
-  const openCuemiiFolder = () => {
-    try {
-      // Try using file:// protocol to open folder
-      window.open(`file:///${cuemiiPath.replace(/\\/g, '/')}`);
-    } catch (error) {
-      // If that fails, copy path to clipboard
-      navigator.clipboard.writeText(cuemiiPath);
-      alert(`Path copied to clipboard:\n${cuemiiPath}\n\nOpen Windows Explorer and paste this path.`);
-    }
-  };
 
   // Check for updates function
   const checkForUpdates = async () => {
@@ -445,63 +414,9 @@ const AboutModal = ({
                   <p className={`font-medium mb-1 ${isDarkMode ? 'text-slate-200' : 'text-slate-700'}`}>
                     To update:
                   </p>
-                  <p className={`mb-2 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                    Run <code className={`px-1 rounded ${isDarkMode ? 'bg-slate-600 text-cyan-400' : 'bg-slate-200 text-cyan-600'}`}>update.bat</code> in:
+                  <p className={isDarkMode ? 'text-slate-300' : 'text-slate-600'}>
+                    Run <code className={`px-1 rounded ${isDarkMode ? 'bg-slate-600 text-cyan-400' : 'bg-slate-200 text-cyan-600'}`}>update.bat</code> in your CueMii install directory.
                   </p>
-                  
-                  {/* Path Display/Edit */}
-                  {isEditingPath ? (
-                    <div className="flex gap-1">
-                      <input
-                        type="text"
-                        value={editPathValue}
-                        onChange={(e) => setEditPathValue(e.target.value)}
-                        className={`flex-1 px-2 py-1 rounded text-xs ${
-                          isDarkMode ? 'bg-slate-600 text-white' : 'bg-white text-slate-800'
-                        }`}
-                        autoFocus
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') saveCuemiiPath(editPathValue);
-                          if (e.key === 'Escape') setIsEditingPath(false);
-                        }}
-                      />
-                      <button
-                        onClick={() => saveCuemiiPath(editPathValue)}
-                        className="px-2 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-xs"
-                      >
-                        ✓
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1">
-                      <code className={`flex-1 px-2 py-1 rounded text-xs truncate ${
-                        isDarkMode ? 'bg-slate-600 text-amber-400' : 'bg-slate-200 text-amber-600'
-                      }`}>
-                        {cuemiiPath}
-                      </code>
-                      <button
-                        onClick={() => { setEditPathValue(cuemiiPath); setIsEditingPath(true); }}
-                        className={`px-1.5 py-1 rounded text-xs ${
-                          isDarkMode ? 'hover:bg-slate-600 text-slate-400' : 'hover:bg-slate-200 text-slate-500'
-                        }`}
-                        title="Edit path"
-                      >
-                        ✎
-                      </button>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="flex gap-2 mb-2">
-                  <button
-                    onClick={openCuemiiFolder}
-                    className="flex-1 bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium py-1.5 px-2 rounded text-center transition-colors flex items-center justify-center gap-1"
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
-                    </svg>
-                    Open Folder
-                  </button>
                 </div>
                 
                 <div className="flex gap-2">
