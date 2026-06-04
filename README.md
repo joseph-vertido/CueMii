@@ -1,6 +1,6 @@
 # BADDIXX CueMii App
 
-**Version 4.0.31**
+**Version 4.0.32**
 
 A comprehensive badminton queuing and court management system built with React and Tailwind CSS.
 
@@ -159,6 +159,11 @@ All application data is automatically saved to your browser's localStorage:
 Data persists across browser refreshes and sessions. Use the **Reset** button in the header to clear all saved data and restore defaults.
 
 ## Version History
+
+- **v4.0.32** - Voice Search in Manage Players
+  - Added: Microphone button for voice-to-text search in Manage Players modal
+  - Uses Web Speech API (works in Chrome, Edge, Safari)
+  - Visual feedback with pulsing red when listening
 
 - **v4.0.31** - Pulsing Glow for Long Wait Times
   - Added: Player cards pulse with colored glow when waiting 10+ minutes
