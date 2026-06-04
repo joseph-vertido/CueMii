@@ -42,10 +42,11 @@ export const getWaitTimeColorLight = (joinedAt) => {
  * Format court time from startTime timestamp
  * @param {number} startTime - Timestamp when match started
  * @param {number} currentTime - Current timestamp
- * @returns {string} Formatted court time
+ * @returns {string} Formatted court time (e.g., "5m" or "1h+" for over 1 hour)
  */
 export const formatCourtTime = (startTime, currentTime) => {
   if (!startTime) return '';
   const diff = Math.floor((currentTime - startTime) / 1000 / 60);
+  if (diff >= 60) return '1h+';
   return `${diff}m`;
 };

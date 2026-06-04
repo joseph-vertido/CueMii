@@ -549,7 +549,7 @@ const MatchQueue = ({
                                 ? (isDarkMode ? 'bg-yellow-500/20 text-yellow-400' : 'bg-yellow-100 text-yellow-600')
                                 : (isDarkMode ? 'bg-slate-600/50 text-slate-400' : 'bg-slate-200 text-slate-600')
                         }`} title="Average wait time for players in this match">
-                          ⏱ {avgWaitTimeMinutes}m
+                          ⏱ {avgWaitTimeMinutes >= 60 ? '1h+' : `${avgWaitTimeMinutes}m`}
                         </span>
                       )}
                       <span className={`text-xs font-medium ${
