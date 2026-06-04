@@ -344,8 +344,8 @@ const MatchQueue = ({
             onClick={scrollToTop}
             className={`sticky top-2 left-1/2 -translate-x-1/2 z-10 px-4 py-2 rounded-full shadow-xl transition-all flex items-center gap-2 animate-bounce-subtle ${
               isDarkMode 
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-cyan-500/30' 
-                : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-cyan-500/40'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white shadow-orange-500/30' 
+                : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white shadow-orange-500/40'
             }`}
             title="Scroll to top"
           >
