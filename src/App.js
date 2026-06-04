@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { initialPlayers, initialCourts } from './data/initialData';
 import useCurrentTime from './hooks/useCurrentTime';
 import useLocalStorage from './hooks/useLocalStorage';
@@ -71,6 +71,52 @@ function App() {
   const [highlightedPriorityMatches, setHighlightedPriorityMatches] = useState({}); // Track matches highlighted for priority: { matchId: timestamp }
   const [lastEndedMatch, setLastEndedMatch] = useState(null); // For undo end match: { courtId, courtName, match, startTime, previousPoolPlayers, previousMatchHistory }
   const [scrollToCourtId, setScrollToCourtId] = useState(null); // For auto-scrolling to court when match is assigned
+  
+  // Panel resize state
+  const [panelWidths, setPanelWidths] = useLocalStorage('baddixx_panelWidths', {
+    playerPool: 450,
+    courts: 280
+  });
+  const [isResizing, setIsResizing] = useState(null); // 'left' or 'right'
+  const containerRef = useRef(null);
+  
+  // Handle panel resize
+  useEffect(() => {
+    if (!isResizing) return;
+    
+    const handleMouseMove = (e) => {
+      if (!containerRef.current) return;
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const containerWidth = containerRect.width;
+      const mouseX = e.clientX - containerRect.left;
+      
+      if (isResizing === 'left') {
+        // Resizing between Player Pool and Match Queue
+        const newWidth = Math.max(250, Math.min(600, mouseX - 12)); // 12px for gap
+        setPanelWidths(prev => ({ ...prev, playerPool: newWidth }));
+      } else if (isResizing === 'right') {
+        // Resizing between Match Queue and Courts
+        const newWidth = Math.max(200, Math.min(400, containerWidth - mouseX - 12));
+        setPanelWidths(prev => ({ ...prev, courts: newWidth }));
+      }
+    };
+    
+    const handleMouseUp = () => {
+      setIsResizing(null);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+    
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing, setPanelWidths]);
   
   const currentTime = useCurrentTime();
 
@@ -2301,9 +2347,9 @@ function App() {
 
       {/* Main Content */}
       <main className="relative max-w-[1920px] mx-auto p-6">
-        <div className="flex gap-6 items-stretch h-[calc(100vh-120px)]">
+        <div ref={containerRef} className="flex items-stretch h-[calc(100vh-120px)]">
           {/* Left Panel - Player Pool */}
-          <div className="w-[450px] flex-shrink-0">
+          <div style={{ width: panelWidths.playerPool }} className="flex-shrink-0">
             <PlayerPool
               poolPlayers={poolPlayers}
               notPresentPlayers={notPresentPlayers}
@@ -2327,8 +2373,22 @@ function App() {
             />
           </div>
 
+          {/* Left Resize Handle */}
+          <div
+            onMouseDown={() => setIsResizing('left')}
+            className={`w-2 flex-shrink-0 cursor-col-resize group flex items-center justify-center mx-1 ${
+              isResizing === 'left' ? 'bg-cyan-500/30' : ''
+            }`}
+          >
+            <div className={`w-1 h-16 rounded-full transition-colors ${
+              isDarkMode 
+                ? 'bg-slate-700 group-hover:bg-cyan-500' 
+                : 'bg-slate-300 group-hover:bg-cyan-400'
+            } ${isResizing === 'left' ? (isDarkMode ? 'bg-cyan-500' : 'bg-cyan-400') : ''}`} />
+          </div>
+
           {/* Middle Panel - Match Queue */}
-          <div className="flex-1" onClick={(e) => {
+          <div className="flex-1 min-w-[300px]" onClick={(e) => {
             // Deselect match when clicking on empty area (not on a match card)
             if (e.target === e.currentTarget) {
               setSelectedMatchId(null);
@@ -2370,8 +2430,22 @@ function App() {
             />
           </div>
 
+          {/* Right Resize Handle */}
+          <div
+            onMouseDown={() => setIsResizing('right')}
+            className={`w-2 flex-shrink-0 cursor-col-resize group flex items-center justify-center mx-1 ${
+              isResizing === 'right' ? 'bg-cyan-500/30' : ''
+            }`}
+          >
+            <div className={`w-1 h-16 rounded-full transition-colors ${
+              isDarkMode 
+                ? 'bg-slate-700 group-hover:bg-cyan-500' 
+                : 'bg-slate-300 group-hover:bg-cyan-400'
+            } ${isResizing === 'right' ? (isDarkMode ? 'bg-cyan-500' : 'bg-cyan-400') : ''}`} />
+          </div>
+
           {/* Right Panel - Courts */}
-          <div className="w-[280px] flex-shrink-0">
+          <div style={{ width: panelWidths.courts }} className="flex-shrink-0">
             <CourtsPanel
               courts={courts}
               newCourtName={newCourtName}

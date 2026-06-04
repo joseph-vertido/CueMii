@@ -1,6 +1,6 @@
 # BADDIXX CueMii App
 
-**Version 4.0.26**
+**Version 4.0.27**
 
 A comprehensive badminton queuing and court management system built with React and Tailwind CSS.
 
@@ -159,6 +159,10 @@ All application data is automatically saved to your browser's localStorage:
 Data persists across browser refreshes and sessions. Use the **Reset** button in the header to clear all saved data and restore defaults.
 
 ## Version History
+
+- **v4.0.27** - Resizable Panels
+  - Added: Draggable resize handles between Player Pool, Match Queue, and Courts
+  - Panel widths are saved to localStorage and persist across sessions
 
 - **v4.0.26** - Timer Display 1h+
   - Changed: Match queue timers show "1h+" when over 60 minutes
