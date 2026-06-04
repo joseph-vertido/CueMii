@@ -1,6 +1,6 @@
 # BADDIXX CueMii App
 
-**Version 4.0.29**
+**Version 4.0.30**
 
 A comprehensive badminton queuing and court management system built with React and Tailwind CSS.
 
@@ -159,6 +159,9 @@ All application data is automatically saved to your browser's localStorage:
 Data persists across browser refreshes and sessions. Use the **Reset** button in the header to clear all saved data and restore defaults.
 
 ## Version History
+
+- **v4.0.30** - Prevent Duplicate Court Names
+  - Added: Cannot create or rename courts with duplicate names (case-insensitive)
 
 - **v4.0.29** - Responsive Courts Grid
   - Changed: Courts switch to 2 columns when panel is resized above 380px

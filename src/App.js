@@ -1786,8 +1786,15 @@ function App() {
   // ==================== Court Functions ====================
   
   const addCourt = () => {
-    if (newCourtName.trim()) {
-      setCourts(prev => [...prev, { id: Date.now(), name: newCourtName.trim(), match: null, startTime: null }]);
+    const trimmedName = newCourtName.trim();
+    if (trimmedName) {
+      // Check for duplicate name (case-insensitive)
+      const isDuplicate = courts.some(c => c.name.toLowerCase() === trimmedName.toLowerCase());
+      if (isDuplicate) {
+        alert(`A court named "${trimmedName}" already exists.`);
+        return;
+      }
+      setCourts(prev => [...prev, { id: Date.now(), name: trimmedName, match: null, startTime: null }]);
       setNewCourtName('');
     }
   };
@@ -1832,8 +1839,15 @@ function App() {
   };
 
   const renameCourt = (courtId, newName) => {
-    if (newName.trim()) {
-      setCourts(prev => prev.map(c => c.id === courtId ? { ...c, name: newName.trim() } : c));
+    const trimmedName = newName.trim();
+    if (trimmedName) {
+      // Check for duplicate name (case-insensitive), excluding the current court
+      const isDuplicate = courts.some(c => c.id !== courtId && c.name.toLowerCase() === trimmedName.toLowerCase());
+      if (isDuplicate) {
+        alert(`A court named "${trimmedName}" already exists.`);
+        return;
+      }
+      setCourts(prev => prev.map(c => c.id === courtId ? { ...c, name: trimmedName } : c));
     }
     setEditingCourtId(null);
     setEditingCourtName('');
