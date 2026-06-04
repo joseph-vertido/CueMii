@@ -300,6 +300,7 @@ const PlayerPool = ({
               type="text"
               value={poolSearch}
               onChange={(e) => setPoolSearch(e.target.value)}
+              onBlur={() => setPoolSearch('')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && filteredNotPresent.length === 1) {
                   moveToAvailable(filteredNotPresent[0].id);
