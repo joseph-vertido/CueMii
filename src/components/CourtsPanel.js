@@ -23,10 +23,14 @@ const CourtsPanel = ({
   undoEndMatch,
   poolPlayers = [],
   matches = [],
-  scrollToCourtId = null
+  scrollToCourtId = null,
+  panelWidth = 280
 }) => {
   // Refs for each court element
   const courtRefs = useRef({});
+  
+  // Determine grid columns based on panel width
+  const useGrid = panelWidth >= 380;
   
   // Scroll to court when scrollToCourtId changes
   useEffect(() => {
@@ -159,9 +163,11 @@ const CourtsPanel = ({
         </div>
       </div>
       
-      <div className="p-1.5 space-y-1.5 flex-1 overflow-y-auto custom-scrollbar">
+      <div className={`p-1.5 flex-1 overflow-y-auto custom-scrollbar ${
+        useGrid ? 'grid grid-cols-2 gap-1.5 auto-rows-min' : 'space-y-1.5'
+      }`}>
         {courts.length === 0 ? (
-          <div className={`text-center py-4 ${isDarkMode ? 'text-slate-500' : 'text-slate-500'}`}>
+          <div className={`text-center py-4 ${useGrid ? 'col-span-2' : ''} ${isDarkMode ? 'text-slate-500' : 'text-slate-500'}`}>
             <p className="text-xs">No courts</p>
           </div>
         ) : (

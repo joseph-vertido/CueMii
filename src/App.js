@@ -2467,6 +2467,7 @@ function App() {
               poolPlayers={poolPlayers}
               matches={matches}
               scrollToCourtId={scrollToCourtId}
+              panelWidth={panelWidths.courts}
             />
           </div>
         </div>
