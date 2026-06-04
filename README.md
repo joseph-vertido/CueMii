@@ -1,6 +1,6 @@
 # BADDIXX CueMii App
 
-**Version 4.0.21**
+**Version 4.0.22**
 
 A comprehensive badminton queuing and court management system built with React and Tailwind CSS.
 
@@ -159,6 +159,11 @@ All application data is automatically saved to your browser's localStorage:
 Data persists across browser refreshes and sessions. Use the **Reset** button in the header to clear all saved data and restore defaults.
 
 ## Version History
+
+- **v4.0.22** - Split In Match Sections
+  - Split "In Match" into "In Match Queue" (yellow) and "In Court" (green)
+  - Auto-expand sections when searching if there are matches
+  - Auto-collapse when search is cleared
 
 - **v4.0.21** - Simplified Update Instructions
   - Simplified update message to just show instructions

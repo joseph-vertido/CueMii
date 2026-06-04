@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SKILL_LEVELS } from '../data/initialData';
 import { formatWaitTime, getWaitTimeColor, getWaitTimeColorLight } from '../utils/formatters';
 import LevelBadge from './LevelBadge';
@@ -15,6 +15,8 @@ const PlayerPool = ({
   poolLevelFilter,
   setPoolLevelFilter,
   isPlayerInMatch,
+  isPlayerInQueue,
+  isPlayerOnCourt,
   removeFromPool,
   moveToAvailable,
   moveToNotPresent,
@@ -27,7 +29,8 @@ const PlayerPool = ({
   isDarkMode = true
 }) => {
   const [dragOverSection, setDragOverSection] = useState(null);
-  const [inMatchCollapsed, setInMatchCollapsed] = useState(true); // Collapsed by default
+  const [inQueueCollapsed, setInQueueCollapsed] = useState(true); // Collapsed by default
+  const [onCourtCollapsed, setOnCourtCollapsed] = useState(true); // Collapsed by default
 
   // Filter pool players based on search and level filter
   const filteredPoolPlayers = poolPlayers
@@ -46,14 +49,31 @@ const PlayerPool = ({
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  // Split into available and in-match players
+  // Split into available, in-queue, and on-court players
   const availablePlayers = filteredPoolPlayers
     .filter(p => !isPlayerInMatch(p.id))
     .sort((a, b) => a.joinedAt - b.joinedAt); // Longest wait first
   
-  const playersInMatch = filteredPoolPlayers
-    .filter(p => isPlayerInMatch(p.id))
+  const playersInQueue = filteredPoolPlayers
+    .filter(p => isPlayerInQueue(p.id))
     .sort((a, b) => a.joinedAt - b.joinedAt);
+  
+  const playersOnCourt = filteredPoolPlayers
+    .filter(p => isPlayerOnCourt(p.id))
+    .sort((a, b) => a.joinedAt - b.joinedAt);
+
+  // Auto-expand/collapse based on search
+  useEffect(() => {
+    if (poolSearch.trim()) {
+      // Expand sections that have matching players
+      if (playersInQueue.length > 0) setInQueueCollapsed(false);
+      if (playersOnCourt.length > 0) setOnCourtCollapsed(false);
+    } else {
+      // Collapse when search is cleared
+      setInQueueCollapsed(true);
+      setOnCourtCollapsed(true);
+    }
+  }, [poolSearch, playersInQueue.length, playersOnCourt.length]);
 
   // Handle Clear Timers with confirmation
   const handleClearTimers = () => {
@@ -414,11 +434,11 @@ const PlayerPool = ({
               )}
             </div>
 
-            {/* Players In Match Section - Collapsible */}
-            {playersInMatch.length > 0 && (
+            {/* Players In Match Queue Section - Collapsible */}
+            {playersInQueue.length > 0 && (
               <div>
                 <button
-                  onClick={() => setInMatchCollapsed(!inMatchCollapsed)}
+                  onClick={() => setInQueueCollapsed(!inQueueCollapsed)}
                   className={`w-full flex items-center justify-between gap-2 mb-2 pt-2 border-t ${
                     isDarkMode ? 'border-slate-700/50' : 'border-slate-200'
                   }`}
@@ -428,11 +448,11 @@ const PlayerPool = ({
                     <h3 className={`text-sm font-semibold uppercase tracking-wider ${
                       isDarkMode ? 'text-yellow-500' : 'text-yellow-600'
                     }`}>
-                      In Match ({playersInMatch.length})
+                      In Match Queue ({playersInQueue.length})
                     </h3>
                   </div>
                   <svg 
-                    className={`w-4 h-4 transition-transform ${inMatchCollapsed ? '' : 'rotate-180'} ${
+                    className={`w-4 h-4 transition-transform ${inQueueCollapsed ? '' : 'rotate-180'} ${
                       isDarkMode ? 'text-yellow-500' : 'text-yellow-600'
                     }`} 
                     fill="none" 
@@ -442,9 +462,47 @@ const PlayerPool = ({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-                {!inMatchCollapsed && (
+                {!inQueueCollapsed && (
                   <div className="grid grid-cols-2 gap-2">
-                    {playersInMatch.map(player => (
+                    {playersInQueue.map(player => (
+                      <PlayerCard key={player.id} player={player} inMatch={true} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Players On Court Section - Collapsible */}
+            {playersOnCourt.length > 0 && (
+              <div>
+                <button
+                  onClick={() => setOnCourtCollapsed(!onCourtCollapsed)}
+                  className={`w-full flex items-center justify-between gap-2 mb-2 pt-2 border-t ${
+                    isDarkMode ? 'border-slate-700/50' : 'border-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                    <h3 className={`text-sm font-semibold uppercase tracking-wider ${
+                      isDarkMode ? 'text-emerald-500' : 'text-emerald-600'
+                    }`}>
+                      In Court ({playersOnCourt.length})
+                    </h3>
+                  </div>
+                  <svg 
+                    className={`w-4 h-4 transition-transform ${onCourtCollapsed ? '' : 'rotate-180'} ${
+                      isDarkMode ? 'text-emerald-500' : 'text-emerald-600'
+                    }`} 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {!onCourtCollapsed && (
+                  <div className="grid grid-cols-2 gap-2">
+                    {playersOnCourt.map(player => (
                       <PlayerCard key={player.id} player={player} inMatch={true} />
                     ))}
                   </div>

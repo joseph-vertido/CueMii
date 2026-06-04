@@ -377,6 +377,14 @@ function App() {
     return inQueuedMatch || onCourt;
   };
 
+  const isPlayerInQueue = (playerId) => {
+    return matches.some(m => m.players.some(p => p.id === playerId));
+  };
+
+  const isPlayerOnCourt = (playerId) => {
+    return courts.some(c => c.match && c.match.players.some(p => p.id === playerId));
+  };
+
   const getAvailablePoolPlayers = () => {
     return poolPlayers.filter(p => !isPlayerInMatch(p.id));
   };
@@ -2304,6 +2312,8 @@ function App() {
               poolLevelFilter={poolLevelFilter}
               setPoolLevelFilter={setPoolLevelFilter}
               isPlayerInMatch={isPlayerInMatch}
+              isPlayerInQueue={isPlayerInQueue}
+              isPlayerOnCourt={isPlayerOnCourt}
               removeFromPool={removeFromPool}
               moveToAvailable={moveToAvailable}
               moveToNotPresent={moveToNotPresent}
