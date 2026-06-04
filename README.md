@@ -1,6 +1,6 @@
 # BADDIXX CueMii App
 
-**Version 4.0.30**
+**Version 4.0.31**
 
 A comprehensive badminton queuing and court management system built with React and Tailwind CSS.
 
@@ -159,6 +159,11 @@ All application data is automatically saved to your browser's localStorage:
 Data persists across browser refreshes and sessions. Use the **Reset** button in the header to clear all saved data and restore defaults.
 
 ## Version History
+
+- **v4.0.31** - Pulsing Glow for Long Wait Times
+  - Added: Player cards pulse with colored glow when waiting 10+ minutes
+  - Green glow (10-25 min), Yellow glow (25-40 min), Red glow (40+ min)
+  - Faster pulse rate as wait time increases
 
 - **v4.0.30** - Prevent Duplicate Court Names
   - Added: Cannot create or rename courts with duplicate names (case-insensitive)

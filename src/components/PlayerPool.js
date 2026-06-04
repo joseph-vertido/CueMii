@@ -149,11 +149,24 @@ const PlayerPool = ({
   };
 
   // Player card component for Available/In Match sections
-  const PlayerCard = ({ player, inMatch }) => (
+  // Get pulsing glow class based on wait time (only for players waiting 10+ minutes)
+  const getWaitGlowClass = (joinedAt) => {
+    if (!joinedAt) return '';
+    const diff = Math.floor((Date.now() - joinedAt) / 1000 / 60);
+    if (diff < 10) return '';
+    if (diff < 25) return 'animate-pulse-glow-green';
+    if (diff < 40) return 'animate-pulse-glow-yellow';
+    return 'animate-pulse-glow-red';
+  };
+
+  const PlayerCard = ({ player, inMatch }) => {
+    const glowClass = !inMatch ? getWaitGlowClass(player.joinedAt) : '';
+    
+    return (
     <div
       draggable={!inMatch}
       onDragStart={(e) => !inMatch && handleDragStart(e, player, 'pool')}
-      className={`group rounded-lg p-2 border transition-all ${
+      className={`group rounded-lg p-2 border transition-all ${glowClass} ${
         isDarkMode 
           ? `bg-slate-800/50 ${inMatch ? 'border-yellow-500/30 opacity-70' : 'border-slate-700/50 hover:border-cyan-500/50'}` 
           : `bg-white shadow-sm ${inMatch ? 'border-yellow-500 opacity-70' : 'border-slate-300 hover:border-cyan-600 hover:shadow-md'}`
@@ -204,7 +217,7 @@ const PlayerPool = ({
         </button>
       )}
     </div>
-  );
+  )};
 
   // Not Present player card - simpler, single line
   const NotPresentCard = ({ player }) => (
