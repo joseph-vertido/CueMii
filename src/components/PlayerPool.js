@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SKILL_LEVELS } from '../data/initialData';
 import { formatWaitTime, getWaitTimeColor, getWaitTimeColorLight } from '../utils/formatters';
 import LevelBadge from './LevelBadge';
@@ -28,6 +28,7 @@ const PlayerPool = ({
   onDropPlayerToNotPresent,
   isDarkMode = true
 }) => {
+  const searchInputRef = useRef(null);
   const [dragOverSection, setDragOverSection] = useState(null);
   const [inQueueCollapsed, setInQueueCollapsed] = useState(true); // Collapsed by default
   const [onCourtCollapsed, setOnCourtCollapsed] = useState(true); // Collapsed by default
@@ -74,6 +75,18 @@ const PlayerPool = ({
       setOnCourtCollapsed(true);
     }
   }, [poolSearch, playersInQueue.length, playersOnCourt.length]);
+
+  // Clear search on mouseup outside search input
+  useEffect(() => {
+    const handleMouseUp = (e) => {
+      if (searchInputRef.current && !searchInputRef.current.contains(e.target)) {
+        setPoolSearch('');
+      }
+    };
+
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => document.removeEventListener('mouseup', handleMouseUp);
+  }, [setPoolSearch]);
 
   // Handle Clear Timers with confirmation
   const handleClearTimers = () => {
@@ -297,10 +310,10 @@ const PlayerPool = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
+              ref={searchInputRef}
               type="text"
               value={poolSearch}
               onChange={(e) => setPoolSearch(e.target.value)}
-              onBlur={() => setPoolSearch('')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && filteredNotPresent.length === 1) {
                   moveToAvailable(filteredNotPresent[0].id);

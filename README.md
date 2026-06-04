@@ -1,6 +1,6 @@
 # BADDIXX CueMii App
 
-**Version 4.0.23**
+**Version 4.0.24**
 
 A comprehensive badminton queuing and court management system built with React and Tailwind CSS.
 
@@ -159,6 +159,9 @@ All application data is automatically saved to your browser's localStorage:
 Data persists across browser refreshes and sessions. Use the **Reset** button in the header to clear all saved data and restore defaults.
 
 ## Version History
+
+- **v4.0.24** - Search Clear on Mouseup
+  - Changed: Search bar clears on mouseup (release) instead of mousedown
 
 - **v4.0.23** - Search Auto-Clear
   - Added: Search bar clears automatically when clicking outside of it
