@@ -26,12 +26,16 @@ const PlayerPool = ({
   clearIdleTimes,
   onDropPlayerToPool,
   onDropPlayerToNotPresent,
-  isDarkMode = true
+  isDarkMode = true,
+  panelWidth = 450
 }) => {
   const searchInputRef = useRef(null);
   const [dragOverSection, setDragOverSection] = useState(null);
   const [inQueueCollapsed, setInQueueCollapsed] = useState(true); // Collapsed by default
   const [onCourtCollapsed, setOnCourtCollapsed] = useState(true); // Collapsed by default
+
+  // Determine grid columns based on panel width
+  const gridCols = panelWidth < 350 ? 'grid-cols-1' : 'grid-cols-2';
 
   // Filter pool players based on search and level filter
   const filteredPoolPlayers = poolPlayers
@@ -393,7 +397,7 @@ const PlayerPool = ({
                   No available players
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-2">
+                <div className={`grid ${gridCols} gap-2`}>
                   {availablePlayers.map(player => (
                     <PlayerCard key={player.id} player={player} inMatch={false} />
                   ))}
@@ -437,7 +441,7 @@ const PlayerPool = ({
                       }`}>
                         {letter}
                       </div>
-                      <div className="grid grid-cols-2 gap-1">
+                      <div className={`grid ${gridCols} gap-1`}>
                         {groupedNotPresent[letter].map(player => (
                           <NotPresentCard key={player.id} player={player} />
                         ))}
@@ -477,7 +481,7 @@ const PlayerPool = ({
                   </svg>
                 </button>
                 {!inQueueCollapsed && (
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className={`grid ${gridCols} gap-2`}>
                     {playersInQueue.map(player => (
                       <PlayerCard key={player.id} player={player} inMatch={true} />
                     ))}
@@ -515,7 +519,7 @@ const PlayerPool = ({
                   </svg>
                 </button>
                 {!onCourtCollapsed && (
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className={`grid ${gridCols} gap-2`}>
                     {playersOnCourt.map(player => (
                       <PlayerCard key={player.id} player={player} inMatch={true} />
                     ))}

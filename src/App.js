@@ -2370,6 +2370,7 @@ function App() {
               onDropPlayerToPool={removePlayerFromMatch}
               onDropPlayerToNotPresent={movePlayerFromMatchToNotPresent}
               isDarkMode={isDarkMode}
+              panelWidth={panelWidths.playerPool}
             />
           </div>
 
