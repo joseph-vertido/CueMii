@@ -71,18 +71,19 @@ const PlayerDatabaseModal = ({
     };
   }, []);
 
-  const toggleVoiceRecognition = () => {
+  const startVoiceRecognition = () => {
     if (!recognitionRef.current) {
       alert('Voice recognition is not supported in this browser.');
       return;
     }
-    
-    if (isListening) {
+    setIsListening(true);
+    recognitionRef.current.start();
+  };
+
+  const stopVoiceRecognition = () => {
+    if (recognitionRef.current && isListening) {
       recognitionRef.current.stop();
       setIsListening(false);
-    } else {
-      setIsListening(true);
-      recognitionRef.current.start();
     }
   };
 
@@ -521,13 +522,17 @@ const PlayerDatabaseModal = ({
                 }`}
               />
               <button
-                onClick={toggleVoiceRecognition}
-                className={`p-2 rounded-lg transition-all ${
+                onMouseDown={startVoiceRecognition}
+                onMouseUp={stopVoiceRecognition}
+                onMouseLeave={stopVoiceRecognition}
+                onTouchStart={startVoiceRecognition}
+                onTouchEnd={stopVoiceRecognition}
+                className={`p-2 rounded-lg transition-all select-none ${
                   isListening 
                     ? 'bg-red-500 text-white animate-pulse' 
                     : 'bg-slate-700 text-slate-400 hover:bg-slate-600 hover:text-white'
                 }`}
-                title={isListening ? "Stop listening" : "Voice search"}
+                title="Hold to speak"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />

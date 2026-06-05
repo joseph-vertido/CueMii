@@ -1,6 +1,6 @@
 # BADDIXX CueMii App
 
-**Version 4.0.33**
+**Version 4.0.34**
 
 A comprehensive badminton queuing and court management system built with React and Tailwind CSS.
 
@@ -159,6 +159,10 @@ All application data is automatically saved to your browser's localStorage:
 Data persists across browser refreshes and sessions. Use the **Reset** button in the header to clear all saved data and restore defaults.
 
 ## Version History
+
+- **v4.0.34** - Hold-to-Listen Voice Search
+  - Changed: Microphone button now uses hold-to-listen (release to stop)
+  - Added: Touch support for mobile devices
 
 - **v4.0.33** - License Improvements
   - Added: Day pass license option
