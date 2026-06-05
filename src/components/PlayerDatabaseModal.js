@@ -33,59 +33,9 @@ const PlayerDatabaseModal = ({
   const [sortOrder, setSortOrder] = useState('asc');
   const [newlyAddedPlayerIds, setNewlyAddedPlayerIds] = useState([]);
   const [showAddSection, setShowAddSection] = useState(false);
-  const [isListening, setIsListening] = useState(false);
   
   const playerListRef = useRef(null);
   const searchInputRef = useRef(null);
-  const recognitionRef = useRef(null);
-
-  // Initialize speech recognition
-  useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
-      
-      recognitionRef.current.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setSearchTerm(transcript);
-        setLetterFilter('');
-        setIsListening(false);
-      };
-      
-      recognitionRef.current.onerror = () => {
-        setIsListening(false);
-      };
-      
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
-    }
-    
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.abort();
-      }
-    };
-  }, []);
-
-  const startVoiceRecognition = () => {
-    if (!recognitionRef.current) {
-      alert('Voice recognition is not supported in this browser.');
-      return;
-    }
-    setIsListening(true);
-    recognitionRef.current.start();
-  };
-
-  const stopVoiceRecognition = () => {
-    if (recognitionRef.current && isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
-    }
-  };
 
   // Reset showAddSection and focus search when modal opens
   useEffect(() => {
@@ -500,45 +450,24 @@ const PlayerDatabaseModal = ({
           {/* Search */}
           <div className="mb-2 flex items-center gap-3">
             <label className="text-cyan-400 text-sm font-bold whitespace-nowrap">Search</label>
-            <div className="flex-1 flex items-center gap-2">
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchTerm}
-                onChange={(e) => { setSearchTerm(e.target.value); setLetterFilter(''); }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && filteredPlayers.length === 1) {
-                    const player = filteredPlayers[0];
-                    if (!isInPool(player.id)) {
-                      onAddToPool(player);
-                      setNewlyAddedPlayerIds(prev => prev.filter(id => id !== player.id));
-                      setSearchTerm('');
-                    }
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchTerm}
+              onChange={(e) => { setSearchTerm(e.target.value); setLetterFilter(''); }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && filteredPlayers.length === 1) {
+                  const player = filteredPlayers[0];
+                  if (!isInPool(player.id)) {
+                    onAddToPool(player);
+                    setNewlyAddedPlayerIds(prev => prev.filter(id => id !== player.id));
+                    setSearchTerm('');
                   }
-                }}
-                placeholder={isListening ? "Listening..." : "Search players..."}
-                className={`flex-1 bg-slate-900 border rounded px-3 py-1.5 text-sm text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none transition-colors ${
-                  isListening ? 'border-red-500 animate-pulse' : 'border-slate-600'
-                }`}
-              />
-              <button
-                onMouseDown={startVoiceRecognition}
-                onMouseUp={stopVoiceRecognition}
-                onMouseLeave={stopVoiceRecognition}
-                onTouchStart={startVoiceRecognition}
-                onTouchEnd={stopVoiceRecognition}
-                className={`p-2 rounded-lg transition-all select-none ${
-                  isListening 
-                    ? 'bg-red-500 text-white animate-pulse' 
-                    : 'bg-slate-700 text-slate-400 hover:bg-slate-600 hover:text-white'
-                }`}
-                title="Hold to speak"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                </svg>
-              </button>
-            </div>
+                }
+              }}
+              placeholder="Search players..."
+              className="flex-1 bg-slate-900 border border-slate-600 rounded px-3 py-1.5 text-sm text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none transition-colors"
+            />
           </div>
 
           {/* A-Z Letter Filter */}
