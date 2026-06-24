@@ -22,14 +22,15 @@ import {
   orderBy
 } from 'firebase/firestore';
 
-// Firebase configuration - UPDATE THESE VALUES
+// Firebase configuration for CueMii Database
 const firebaseConfig = {
-  apiKey: "AIzaSyD_YOUR_API_KEY_HERE",
+  apiKey: "AIzaSyAHgH2IFI6kMs6jZgIHckbKuGazJ6rL17g",
   authDomain: "cuemii-database.firebaseapp.com",
   projectId: "cuemii-database",
-  storageBucket: "cuemii-database.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  storageBucket: "cuemii-database.firebasestorage.app",
+  messagingSenderId: "129349819856",
+  appId: "1:129349819856:web:83522e76bb1fcb78c9add5",
+  measurementId: "G-YBZDH11K3T"
 };
 
 // Initialize Firebase
