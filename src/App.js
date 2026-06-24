@@ -2538,6 +2538,14 @@ function App() {
         licenseInfo={licenseInfo}
         onLicenseUpdate={handleLicenseUpdate}
         playerDatabaseCount={players.length}
+        cloudSyncEnabled={cloudSyncEnabled}
+        setCloudSyncEnabled={setCloudSyncEnabled}
+        syncStatus={syncStatus}
+        lastSyncDisplay={lastSyncDisplay}
+        syncError={syncError}
+        isOnline={isOnline}
+        performSync={performSync}
+        isFirebaseConfigured={isFirebaseConfigured}
       />
 
       {/* Reports Modal */}
@@ -2557,14 +2565,6 @@ function App() {
         isDarkMode={isDarkMode}
         warningSettings={warningSettings}
         onUpdateSettings={setWarningSettings}
-        cloudSyncEnabled={cloudSyncEnabled}
-        setCloudSyncEnabled={setCloudSyncEnabled}
-        syncStatus={syncStatus}
-        lastSyncDisplay={lastSyncDisplay}
-        syncError={syncError}
-        isOnline={isOnline}
-        performSync={performSync}
-        isFirebaseConfigured={isFirebaseConfigured}
       />
     </div>
   );

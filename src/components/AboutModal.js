@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { APP_VERSION } from '../data/initialData';
+import { SYNC_STATUS } from '../hooks/useCloudSync';
 import { 
   validateLicense, 
   saveLicense, 
@@ -36,16 +37,53 @@ const AboutModal = ({
   isDarkMode = true, 
   licenseInfo,
   onLicenseUpdate,
-  playerDatabaseCount = 0 
+  playerDatabaseCount = 0,
+  // Cloud Sync Props
+  cloudSyncEnabled = false,
+  setCloudSyncEnabled = () => {},
+  syncStatus = 'idle',
+  lastSyncDisplay = 'Never',
+  syncError = null,
+  isOnline = true,
+  performSync = () => {},
+  isFirebaseConfigured = false
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editLicenseKey, setEditLicenseKey] = useState('');
   const [editError, setEditError] = useState('');
+  const [isSyncing, setIsSyncing] = useState(false);
   
   // Update checking state
   const [updateStatus, setUpdateStatus] = useState('idle'); // idle, checking, available, upToDate, error
   const [latestVersion, setLatestVersion] = useState(null);
   const [updateError, setUpdateError] = useState('');
+
+  const getSyncStatusDisplay = () => {
+    if (!isFirebaseConfigured) {
+      return { text: 'Not Configured', color: 'text-slate-400', icon: '⚠️' };
+    }
+    if (!isOnline) {
+      return { text: 'Offline', color: 'text-yellow-500', icon: '📴' };
+    }
+    switch (syncStatus) {
+      case SYNC_STATUS.SYNCING:
+        return { text: 'Syncing...', color: 'text-cyan-400', icon: '🔄' };
+      case SYNC_STATUS.SUCCESS:
+        return { text: 'Synced!', color: 'text-emerald-400', icon: '✓' };
+      case SYNC_STATUS.ERROR:
+        return { text: 'Error', color: 'text-red-400', icon: '✗' };
+      default:
+        return { text: 'Ready', color: 'text-slate-400', icon: '☁️' };
+    }
+  };
+
+  const handleManualSync = async () => {
+    setIsSyncing(true);
+    await performSync();
+    setIsSyncing(false);
+  };
+
+  const statusDisplay = getSyncStatusDisplay();
 
   // Check for updates function
   const checkForUpdates = async () => {
@@ -442,6 +480,92 @@ const AboutModal = ({
                   </a>
                 </div>
               </div>
+            )}
+          </div>
+
+          {/* Cloud Sync Card */}
+          <div className={`rounded-xl border p-3 ${
+            isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-slate-50 border-slate-200'
+          }`}>
+            <div className="flex items-center justify-between mb-2">
+              <span className={`text-sm font-medium flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>
+                <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                </svg>
+                Cloud Sync
+              </span>
+              <button
+                onClick={() => setCloudSyncEnabled(!cloudSyncEnabled)}
+                className={`relative w-10 h-5 rounded-full transition-colors ${
+                  cloudSyncEnabled 
+                    ? 'bg-cyan-500' 
+                    : isDarkMode ? 'bg-slate-600' : 'bg-slate-300'
+                }`}
+              >
+                <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${
+                  cloudSyncEnabled ? 'translate-x-5' : 'translate-x-0.5'
+                }`} />
+              </button>
+            </div>
+            
+            {/* Sync Status */}
+            <div className={`flex items-center justify-between py-2 border-t ${
+              isDarkMode ? 'border-slate-700' : 'border-slate-200'
+            }`}>
+              <span className={`text-xs font-medium ${statusDisplay.color}`}>
+                {statusDisplay.icon} {statusDisplay.text}
+              </span>
+              <span className={`text-xs ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                Last: {lastSyncDisplay}
+              </span>
+            </div>
+
+            {/* Sync Error */}
+            {syncError && (
+              <div className={`mt-1 p-1.5 rounded text-xs ${
+                isDarkMode ? 'bg-red-500/10 text-red-400' : 'bg-red-50 text-red-600'
+              }`}>
+                {syncError}
+              </div>
+            )}
+
+            {/* Manual Sync Button */}
+            <button
+              onClick={handleManualSync}
+              disabled={isSyncing || !isOnline || !isFirebaseConfigured}
+              className={`w-full flex items-center justify-center gap-1.5 px-3 py-1.5 mt-2 rounded-lg text-xs font-medium transition-all ${
+                isSyncing || !isOnline || !isFirebaseConfigured
+                  ? isDarkMode 
+                    ? 'bg-slate-700 text-slate-500 cursor-not-allowed' 
+                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white shadow-md shadow-cyan-500/25'
+              }`}
+            >
+              {isSyncing ? (
+                <>
+                  <svg className="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Syncing...
+                </>
+              ) : (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Sync Now
+                </>
+              )}
+            </button>
+            {!isFirebaseConfigured && (
+              <p className={`text-xs mt-1 text-center ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                Firebase not configured
+              </p>
+            )}
+            {!isOnline && isFirebaseConfigured && (
+              <p className={`text-xs mt-1 text-center ${isDarkMode ? 'text-yellow-500' : 'text-yellow-600'}`}>
+                Offline - will sync when connected
+              </p>
             )}
           </div>
             </div>
