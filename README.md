@@ -1,6 +1,6 @@
 # BADDIXX CueMii App
 
-**Version 4.0.36**
+**Version 4.0.37**
 
 A comprehensive badminton queuing and court management system built with React and Tailwind CSS.
 
@@ -160,6 +160,7 @@ Data persists across browser refreshes and sessions. Use the **Reset** button in
 
 ## Version History
 
+- **v4.0.37** - Move Cloud Sync to About Modal
 - **v4.0.36** - Firebase Cloud Sync
   - Added: Two-way cloud sync for player database using Firebase Firestore
   - Added: Auto-sync when online (configurable)
