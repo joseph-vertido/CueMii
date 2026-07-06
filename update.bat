@@ -53,6 +53,7 @@ if not exist "%TEMP_DIR%\CueMii-main" (
 
 echo [4/5] Updating files...
 REM Copy all files from the extracted folder to current directory
+REM Note: node_modules is excluded from the repo, so it won't be downloaded
 xcopy /s /e /y "%TEMP_DIR%\CueMii-main\*" "." >nul
 
 echo [5/5] Cleaning up...
